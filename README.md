@@ -36,11 +36,13 @@ This set is relatively easy. With one exception, most of these exercises should 
 
 If you've written any crypto code in the past, you're going to feel like skipping a lot of this. Don't skip them. At least two of them (we won't say which) are important stepping stones to later attacks.
 
-1. [x] Convert hex to base64
-2. [x] Fixed XOR
-3. [ ] Single-byte XOR cipher
-4. [ ] Detect single-character XOR
-5. [ ] Implement repeating-key XOR
-6. [ ] Break repeating-key XOR
-7. [ ] AES in ECB mode
-8. [ ] Detect AES in ECB mode
+1. ✔️ Convert hex to base64
+2. ✔️ Fixed XOR
+3. ❌ Single-byte XOR cipher
+4. ❌ Detect single-character XOR
+5. ❌ Implement repeating-key XOR
+6. ❌ Break repeating-key XOR
+7. ❌ AES in ECB mode
+8. ❌ Detect AES in ECB mode
+
+
