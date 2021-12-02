@@ -8,9 +8,9 @@ namespace CryptoPals
 {
     internal class Basics
     {
-        public static string HexStringToB64(string hex)
+        public static string ConvertHexToBase64(string hex)
         {
-            return System.Convert.ToBase64String(HexStringToHex(hex));
+            return Convert.ToBase64String(HexStringToHex(hex));
         }
 
         private static byte[] HexStringToHex(string hex)
@@ -24,7 +24,7 @@ namespace CryptoPals
         //Fixed XOR
         public static string XORString(string input, string key)
         {
-            byte[] byteInput = ToByteArray(HexStringToB64(input));
+            byte[] byteInput = ToByteArray(ConvertHexToBase64(input));
             byte[] byteKey = ToByteArray(key);
             byte[] byteResult = new byte[byteInput.Length];
 
@@ -44,16 +44,16 @@ namespace CryptoPals
         public static string[] SingleByteBruteForce(string input)
         {
             string alphabet = "abcdefghijklmnopqrstuvwxyz";
-            string decoded = HexStringToB64(input);
+            int decodeLength = ConvertHexToBase64(input).Length;
             string[] output = new string[alphabet.Length*2];
             var counter = 0;
 
             foreach (var letter in alphabet)
             {
-                string key = new string(letter, decoded.Length);
+                string key = new string(letter, decodeLength);
                 output[counter++] += XORString(input, key);
 
-                key = new string(Char.ToUpper(letter), decoded.Length);
+                key = new string(Char.ToUpper(letter), decodeLength);
                 output[counter++] += XORString(input, key);
             }
 
