@@ -41,20 +41,28 @@ namespace CryptoPals
         }
 
         //Single byte brute force
-        public static string[] SingleByteBruteForce(string input)
+        public static Dictionary<char,byte[]> SingleByteBruteForce(string input)
         {
             string alphabet = "abcdefghijklmnopqrstuvwxyz";
-            int decodeLength = ConvertHexToBase64(input).Length;
-            string[] output = new string[alphabet.Length*2];
-            var counter = 0;
+            Dictionary<char, byte[]> output = new Dictionary<char, byte[]>();
 
             foreach (var letter in alphabet)
             {
-                string key = new string(letter, decodeLength);
-                output[counter++] += XORString(input, key);
+                output.Add(letter, SingleByteXORCipher(letter, ToByteArray(input)));
+                output.Add(Char.ToUpper(letter), SingleByteXORCipher(Char.ToUpper(letter), ToByteArray(input)));
+            }
 
-                key = new string(Char.ToUpper(letter), decodeLength);
-                output[counter++] += XORString(input, key);
+            return output;
+        }
+
+        public static byte[] SingleByteXORCipher(char key, byte[] input)
+        {
+            byte[] output = new byte[input.Length];
+            int i = -1;
+
+            foreach(var index in input)
+            {
+                output[++i] = (byte)(input[i] ^ key);
             }
 
             return output;

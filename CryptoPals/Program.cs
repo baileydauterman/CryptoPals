@@ -35,7 +35,12 @@ var output2 = Basics.SingleByteBruteForce(input);
 
 Console.WriteLine("Input: " + input);
 Console.WriteLine("Decode Input: " + Basics.ConvertHexToBase64(input));
-foreach(var b in output2)
+Console.WriteLine(PlaintextCore.EnglishScore("The silver fox meets at noon"));
+Console.WriteLine(PlaintextCore.EnglishScore("Ce n'est pas en anglais"));
+Console.WriteLine(PlaintextCore.EnglishScore("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"));
+foreach (var b in output2)
 {
-    Console.WriteLine(Basics.ConvertHexToBase64(b));
+    Console.WriteLine(Basics.ConvertHexToBase64(b.Value.ToString()));
 }
+
+Console.ReadLine();
