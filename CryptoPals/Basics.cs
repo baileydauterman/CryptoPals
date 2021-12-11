@@ -8,12 +8,7 @@ namespace CryptoPals
 {
     internal class Basics
     {
-        public static string ConvertHexToBase64(string hex)
-        {
-            return Convert.ToBase64String(HexStringToHex(hex));
-        }
-
-        private static byte[] HexStringToHex(string hex)
+        public static byte[] HexToByteArray(string hex)
         {
             return Enumerable.Range(0, hex.Length)
                              .Where(x => x % 2 == 0)
@@ -24,32 +19,28 @@ namespace CryptoPals
         //Fixed XOR
         public static string XORString(string input, string key)
         {
-            byte[] byteInput = ToByteArray(ConvertHexToBase64(input));
-            byte[] byteKey = ToByteArray(key);
+            byte[] byteInput = HexToByteArray(input);
+            byte[] byteKey = HexToByteArray(key);
             byte[] byteResult = new byte[byteInput.Length];
 
             for (int i = 0; i < byteInput.Length; i++)
             {
                 byteResult[i] = (byte)(byteInput[i] ^ byteKey[i]);
             }
-            return BitConverter.ToString(byteResult).Replace("-", string.Empty);
+            return Convert.ToBase64String(byteResult);
         }
 
-        private static byte[] ToByteArray(string input)
-        {
-            return Convert.FromBase64String(input);
-        }
 
         //Single byte brute force
-        public static Dictionary<char,byte[]> SingleByteBruteForce(string input)
+        public static Dictionary<char,string> SingleByteBruteForce(string input)
         {
-            string alphabet = "abcdefghijklmnopqrstuvwxyz";
-            Dictionary<char, byte[]> output = new Dictionary<char, byte[]>();
+            IEnumerable<int> allCharacters = Enumerable.Range(0,256);
+            Dictionary<char, string> output = new Dictionary<char, string>();
 
-            foreach (var letter in alphabet)
+            foreach (var letter in allCharacters)
             {
-                output.Add(letter, SingleByteXORCipher(letter, ToByteArray(input)));
-                output.Add(Char.ToUpper(letter), SingleByteXORCipher(Char.ToUpper(letter), ToByteArray(input)));
+                string letters = new string((char)letter, input.Length);
+                output.Add((char)letter, XORString(input, letters));
             }
 
             return output;
