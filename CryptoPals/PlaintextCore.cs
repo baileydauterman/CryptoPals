@@ -8,32 +8,14 @@ namespace CryptoPals
 {
     internal class PlaintextCore
     {
-        public static double EnglishScore(string message)
+        public static string PrintByteArray(byte[] input)
         {
-            return message.Aggregate(0.0, (current, c) =>
+            var sb = new StringBuilder(input.Length * 2);
+            for (var i = 0; i < input.Length; i++)
             {
-                if (char.IsControl(c))
-                {
-                    return current - 5;
-                }
-
-                if (c == ' ')
-                {
-                    return current + 10;
-                }
-
-                if (char.IsUpper(c))
-                {
-                    return current + 2;
-                }
-
-                if (char.IsLetterOrDigit(c))
-                {
-                    return current + 5;
-                }
-
-                return current;
-            });
+                sb.AppendFormat("{0:x2}", input[i]);
+            }
+            return sb.ToString();
         }
 
         public static double CheckStringRatio(string input)

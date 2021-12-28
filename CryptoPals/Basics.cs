@@ -72,5 +72,33 @@ namespace CryptoPals
             return output;
         }
 
+        public static byte[] RepeatingXORCipher(string key, string input)
+        {
+            var output = new byte[input.Length];
+            var inputBytes = Encoding.UTF8.GetBytes(input);
+            var keyBytes = Encoding.UTF8.GetBytes(key);
+
+            for(int i = 0; i < inputBytes.Length; i++)
+            {
+                output[i] = (byte)(inputBytes[i] ^ keyBytes[i % key.Length]);
+            }
+
+            return output;
+        }
+
+        public static int HammingDistance(string one, string two)
+        {
+            if (one.Length != two.Length) { throw new ArgumentException(); }
+
+            int counter = 0;
+
+            for(int i=0; i < one.Length; i++)
+            {
+                counter += Math.Abs((byte)one[i] - (byte)two[i]);
+            }
+
+            return counter;
+        }
+
     }
 }
