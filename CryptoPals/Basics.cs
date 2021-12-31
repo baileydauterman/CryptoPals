@@ -9,6 +9,34 @@ namespace CryptoPals
 {
     internal class Basics
     {
+        public static byte[] ConvertToByteArray(string str, Encoding encoding)
+        {
+            return encoding.GetBytes(str);
+        }
+
+        public static String ToBinary(Byte[] data)
+        {
+            return string.Join(" ", data.Select(byt => Convert.ToString(byt, 2).PadLeft(8, '0')));
+        }
+
+        public static int BinaryEditDistance(string one, string two)
+        {
+            if(one.Length != two.Length) { throw new ArgumentException("unequal distance for hamming"); }
+
+            string oneBin = ToBinary(ConvertToByteArray(one, Encoding.UTF8));
+            string twoBin = ToBinary(ConvertToByteArray(two, Encoding.UTF8));
+            int counter = 0;
+
+            for (int i = 0; i < oneBin.Length; i++) { 
+                if(oneBin[i] != twoBin[i]) {
+                    counter++;
+                }
+            }
+
+            return counter;
+        }
+
+
         public static byte[] HexToByteArray(string hex)
         {
             var outputLength = hex.Length / 2;
@@ -67,12 +95,10 @@ namespace CryptoPals
                 output[++i] = (byte)((input[i] ^ key));
             }
 
-            //string retString = Convert.ToBase64String(Basics.HexToByteArray(BitConverter.ToString(output).Replace("-", "")));
-
             return output;
         }
 
-        public static byte[] RepeatingXORCipher(string key, string input)
+        public static byte[] EncryptRepeatingKeyXOR(string key, string input)
         {
             var output = new byte[input.Length];
             var inputBytes = Encoding.UTF8.GetBytes(input);
@@ -86,19 +112,80 @@ namespace CryptoPals
             return output;
         }
 
-        public static int HammingDistance(string one, string two)
+        public static int EditDistance(string one, string two)
         {
-            if (one.Length != two.Length) { throw new ArgumentException(); }
+            byte[] oneBytes = Encoding.ASCII.GetBytes(one);
+            byte[] twoBytes = Encoding.ASCII.GetBytes(two);
+            if (oneBytes.Length != twoBytes.Length) { throw new ArgumentException("arrays are not the same length"); }
 
-            int counter = 0;
+            int score = 0;
 
-            for(int i=0; i < one.Length; i++)
+            for(int i=0; i < oneBytes.Length; i++)
             {
-                counter += Math.Abs((byte)one[i] - (byte)two[i]);
+                var distance = 0;
+                var counter = oneBytes[i] ^ twoBytes[i];
+                while (counter > 0)
+                {
+                    distance++;
+                    counter &= counter - 1; 
+                }
+                score += distance;
             }
-
-            return counter;
+            return score;
         }
 
+        public static int EditDistance(byte[] one, byte[] two)
+        {
+            if (one.Length != two.Length) { throw new ArgumentException("arrays are not the same length"); }
+
+            int score = 0;
+
+            for (int i = 0; i < one.Length; i++)
+            {
+                var distance = 0;
+                var counter = one[i] ^ two[i];
+                while (counter > 0)
+                {
+                    distance++;
+                    counter &= counter - 1;
+                }
+                score += distance;
+            }
+            return score;
+        }
+
+        public static int NormalizedKeySize(byte[] input)
+        {
+            int lowestKeySize = 0;
+            var normalEditDistance = decimal.MaxValue;
+
+            for(var keySize=2; keySize<=40; keySize++)
+            {
+                var calcCount = 0;
+                var editDistance = 0;
+
+                for(var i=1; i<input.Length / keySize; i++)
+                {
+                    (var left, var right) = SplitArrayInHalf(input, keySize, i);
+                    editDistance += EditDistance(left, right);
+                    calcCount++;
+                }
+                var normalizedEditDistance = (decimal)editDistance / (decimal)calcCount / (decimal)keySize;
+                if(normalizedEditDistance < normalEditDistance)
+                {
+                    normalEditDistance = normalizedEditDistance;
+                    lowestKeySize = keySize;
+                }
+            }
+
+            return lowestKeySize;
+        }
+
+        public static (byte[], byte[]) SplitArrayInHalf(byte[] input, int keySize, int i)
+        {
+            var left = new ArraySegment<byte>(input, keySize * (i - 1), keySize).ToArray();
+            var right = new ArraySegment<byte>(input, keySize * i, keySize).ToArray();
+            return (left, right);
+        }
     }
 }

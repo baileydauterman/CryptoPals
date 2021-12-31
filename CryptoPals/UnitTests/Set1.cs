@@ -40,9 +40,9 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge2()
         {
-            var output = Basics.XORString("1c0111001f010100061a024b53535009181c", "686974207468652062756c6c277320657965");
             var expected = "746865206b696420646f6e277420706c6179";
-            Assert.AreEqual(Convert.ToBase64String(Basics.HexToByteArray(expected)), output);
+            Assert.AreEqual(Convert.ToBase64String(Basics.HexToByteArray(expected)), 
+                            Basics.XORString("1c0111001f010100061a024b53535009181c", "686974207468652062756c6c277320657965"));
         }
 
         // Set 1 Challenge 3
@@ -59,9 +59,8 @@ namespace CryptoPals.UnitTests
         public void Challenge3()
         {
             var given = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
-            var output = Basics.SingleByteBruteForce(given);
-            var bestScore = PlaintextCore.ScoreByteArray(output.Values);
-            Assert.AreEqual("Cooking MC's like a pound of bacon", bestScore);
+            Assert.AreEqual("Cooking MC's like a pound of bacon", 
+                            PlaintextCore.ScoreByteArray(Basics.SingleByteBruteForce(given).Values));
         }
 
         // Set 1 Challenge 4
@@ -105,7 +104,7 @@ namespace CryptoPals.UnitTests
         {
             string input = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
             string key = "ICE";
-            var output = Basics.RepeatingXORCipher(key, input);
+            var output = Basics.EncryptRepeatingKeyXOR(key, input);
             var expected = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272" +
                 "a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f";
             Assert.AreEqual(expected, PlaintextCore.PrintByteArray(output));
@@ -129,7 +128,7 @@ namespace CryptoPals.UnitTests
         // and
         // wokka wokka!!!
         // is 37. Make sure your code agrees before you proceed.
-        // For each KEYSIZE, take the first KEYSIZE worth of bytes, and the second KEYSIZE worth of bytes, and find the edit distance between them.Normalize this result by
+        // For each KEYSIZE, take the first KEYSIZE worth of bytes, and the second KEYSIZE worth of bytes, and find the edit distance between them. Normalize this result by
         // dividing by KEYSIZE.
         // The KEYSIZE with the smallest normalized edit distance is probably the key.You could proceed perhaps with the smallest 2-3 KEYSIZE values. Or take 4 KEYSIZE blocks
         // instead of 2 and average the distances.
@@ -146,7 +145,10 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge6()
         {
-            Assert.AreEqual(37, Basics.HammingDistance("this is a test", "wokka wokka!!!"));
+            var fileData = File.ReadLines("../../../Data/Challenge6.txt");
+            Convert.FromBase64String(fileData);
+            //var results = Basics.BreakRepeatingXOR(fileData);
+            Assert.AreEqual(37, Basics.EditDistance("this is a test", "wokka wokka!!!"));
         }
     }
 }
