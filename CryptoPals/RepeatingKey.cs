@@ -123,8 +123,8 @@ namespace CryptoPals
 
             for(int i=0; i < transposedBytes.Length; i++)
             {
-                SingleByteKey.Decrypt(Basics.GetMultiArrayRow(transposedBytes, i));
-                PlaintextCore.ScoreByteArray()
+                var bestScore = SingleByteKey.Decrypt(Basics.GetMultiArrayRow(transposedBytes, i));
+                var output = PlaintextCore.ScoreByteArray(bestScore.Values);
             }
 
             return Encoding.UTF8.GetBytes(key);
