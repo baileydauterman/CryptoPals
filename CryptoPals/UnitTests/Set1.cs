@@ -23,7 +23,7 @@ namespace CryptoPals.UnitTests
         {
             var given = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
             var hex2base62 = Convert.ToBase64String(Basics.HexToByteArray(given));
-            Assert.IsTrue(hex2base62 == "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t");
+            Assert.AreEqual("SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t", hex2base62);
         }
         
         // Set 1 Challenge 2
@@ -60,7 +60,7 @@ namespace CryptoPals.UnitTests
         {
             var given = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
             Assert.AreEqual("Cooking MC's like a pound of bacon", 
-                            PlaintextCore.ScoreByteArray(Basics.SingleByteBruteForce(given).Values));
+                            PlaintextCore.ScoreByteArray(SingleByteKey.Decrypt(given).Values));
         }
 
         // Set 1 Challenge 4
@@ -77,7 +77,7 @@ namespace CryptoPals.UnitTests
 
             foreach(var line in input)
             {
-                var output = Basics.SingleByteBruteForce(line);
+                var output = SingleByteKey.Decrypt(line);
                 bestScores[count++] = PlaintextCore.ScoreByteArray(output.Values);
             }
 
@@ -104,7 +104,7 @@ namespace CryptoPals.UnitTests
         {
             string input = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
             string key = "ICE";
-            var output = Basics.EncryptRepeatingKeyXOR(key, input);
+            var output = RepeatingKey.Encrypt(key, input);
             var expected = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272" +
                 "a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f";
             Assert.AreEqual(expected, PlaintextCore.PrintByteArray(output));
@@ -145,10 +145,11 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge6()
         {
-            var fileData = File.ReadLines("../../../Data/Challenge6.txt");
-            Convert.FromBase64String(fileData);
-            //var results = Basics.BreakRepeatingXOR(fileData);
-            Assert.AreEqual(37, Basics.EditDistance("this is a test", "wokka wokka!!!"));
+            var fileData = File.ReadAllText("../../../Data/Challenge6.txt");
+            // Get 3 lowest normalized key sizes
+            var dat = RepeatingKey.Decrypt(Convert.FromBase64String(fileData));
+
+            Assert.AreEqual(37, Basics.BinaryEditDistance("this is a test", "wokka wokka!!!"));
         }
     }
 }

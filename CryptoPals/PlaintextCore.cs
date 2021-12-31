@@ -18,20 +18,7 @@ namespace CryptoPals
             return sb.ToString();
         }
 
-        public static double CheckStringRatio(string input)
-        {
-            char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-            double positiveMatch = 0.0;
-            foreach (char c in input)
-            {
-                if(alpha.Contains(char.ToUpper(c)) || c == (char)32) {
-                    positiveMatch++;
-                }
-            }
-            return positiveMatch / input.Length;
-        }
-
-        private static Dictionary<char, int> frequencies = new Dictionary<char, int>
+        private static readonly Dictionary<char, int> frequencies = new Dictionary<char, int>
         {
             ['e'] = 26,
             ['t'] = 25,
