@@ -145,11 +145,10 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge6()
         {
-            var fileData = File.ReadAllText("../../../Data/Challenge6.txt");
-            // Get 3 lowest normalized key sizes
-            var dat = RepeatingKey.Decrypt(Convert.FromBase64String(fileData));
-
             Assert.AreEqual(37, Basics.BinaryEditDistance("this is a test", "wokka wokka!!!"));
+            var fileData = File.ReadAllText("../../../Data/Challenge6.txt");
+            var dat = RepeatingKey.Decrypt(Convert.FromBase64String(fileData));
+            Assert.IsTrue(PlaintextCore.PrintByteArrayToString(dat).Contains("I'm back and I'm ringin' the bell"));
         }
     }
 }

@@ -69,12 +69,12 @@ namespace CryptoPals
             }
             return Convert.ToBase64String(byteResult);
         }
-        
-        public static byte[] GetMultiArrayRow(byte[,] matrix, int rowNumber)
+
+        public static byte[] GetRow(byte[,] matrix, int rowNumber)
         {
             return Enumerable.Range(0, matrix.GetLength(1))
-                .Select(x => matrix[x, rowNumber])
-                .ToArray();
+                    .Select(x => matrix[rowNumber, x])
+                    .ToArray();
         }
     }
 }

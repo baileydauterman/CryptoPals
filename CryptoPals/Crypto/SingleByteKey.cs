@@ -21,7 +21,6 @@ namespace CryptoPals
             return output;
         }
 
-
         public static Dictionary<char, byte[]> Decrypt(string input)
         {
             Dictionary<char, byte[]> output = new Dictionary<char, byte[]>();

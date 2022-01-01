@@ -18,6 +18,11 @@ namespace CryptoPals
             return sb.ToString();
         }
 
+        public static string PrintByteArrayToString(byte[] input)
+        {
+            return Encoding.Default.GetString(input);
+        }
+
         private static readonly Dictionary<char, int> frequencies = new Dictionary<char, int>
         {
             ['e'] = 26,
@@ -38,6 +43,22 @@ namespace CryptoPals
         public static byte[] ScoreByteArray(IEnumerable<byte[]> input)
         {
             return input.Aggregate((highest, next) => ScoreEnglish(next) > ScoreEnglish(highest) ? next : highest);
+        }
+
+        public static char ScoreByteArray(Dictionary<char, byte[]> input)
+        {
+            int highestScore = 0;
+            KeyValuePair<char, byte[]> output = new KeyValuePair<char, byte[]>();
+            foreach (var pair in input)
+            {
+                var score = ScoreEnglish(pair.Value);
+                if(score > highestScore)
+                {
+                    highestScore = score;
+                    output = pair;
+                }
+            }
+            return output.Key;
         }
 
         public static int ScoreEnglish(byte[] input)

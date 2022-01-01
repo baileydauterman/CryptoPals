@@ -28,8 +28,19 @@ namespace CryptoPals
             var possibleKeys = NormalizedKeySize(encryptedData);
             var chunkedValues = ChunkData(encryptedData, possibleKeys.Last());
             var transposedBlocks = TransposeChunkData(chunkedValues);
-            var singleByteXor = SingleByteXor(transposedBlocks);
-            return new byte[0];
+            var encryptionKey = SingleByteXor(transposedBlocks);
+            var counter = 0;
+
+            for (int i=0; i<encryptedData.Length; i++)
+            {
+                encryptedData[i] = (byte)(encryptedData[i] ^ encryptionKey[i % encryptionKey.Length]);
+                counter++;
+                if (counter > encryptionKey.Length-1)
+                {
+                    counter = 0;
+                }
+            }
+            return encryptedData;
         }
 
         private static int EditDistance(byte[] one, byte[] two)
@@ -121,10 +132,10 @@ namespace CryptoPals
         {
             string key = "";
 
-            for(int i=0; i < transposedBytes.Length; i++)
+            for(int i=0; i <= transposedBytes.GetLength(0) - 1; i++)
             {
-                var bestScore = SingleByteKey.Decrypt(Basics.GetMultiArrayRow(transposedBytes, i));
-                var output = PlaintextCore.ScoreByteArray(bestScore.Values);
+                var bestScore = SingleByteKey.Decrypt(Basics.GetRow(transposedBytes, i));
+                key +=  PlaintextCore.ScoreByteArray(bestScore);
             }
 
             return Encoding.UTF8.GetBytes(key);
