@@ -1,6 +1,6 @@
 # CryptoPals -- https://cryptopals.com/
 
-These are my attempts at the CryptoPals challenges. I am sure my code is sloppy and not the best way to implement some of the solutions, but I am using this for learning purposes so I am more focused on learning the subject than the quality of the code at this point.
+These are my attempts at the CryptoPals challenges. I am sure my code is sloppy and not the best way to implement some of the solutions, but I am using this for learning purposes. If you have any suggestions on how to better the code, feel free to leave a PR or send me a message.
 
 ### What Are The Rules?
 There aren't any! For several years, we ran these challenges over email, and asked participants not to share their results. The honor system worked beautifully! But now we're ready to set aside the ceremony and just publish the challenges for everyone to work on.
