@@ -28,6 +28,8 @@ Counting is not a hard problem. But cryptography is. There are just a few things
 
 People "know" this already, but they don't really know it in their gut, and we think the reason for that is that very few people actually know how to implement the best-known attacks. So, mail us, and we'll give you a tour of them.
 
+---
+
 ## Set 1
 
 This is the qualifying set. We picked the exercises in it to ramp developers up gradually into coding cryptography, but also to verify that we were working with people who were ready to write code.
@@ -45,4 +47,18 @@ If you've written any crypto code in the past, you're going to feel like skippin
 7. ✔️ AES in ECB mode
 8. ❌ Detect AES in ECB mode
 
+## Set 2
+This is the first of several sets on block cipher cryptography. This is bread-and-butter crypto, the kind you'll see implemented in most web software that does crypto.
 
+This set is relatively easy. People that clear set 1 tend to clear set 2 somewhat quickly.
+
+Three of the challenges in this set are extremely valuable in breaking real-world crypto; one allows you to decrypt messages encrypted in the default mode of AES, and the other two allow you to rewrite messages encrypted in the most popular modes of AES.
+
+09. ❌ Implement PKCS#7 padding
+10. ❌ Implement CBC mode
+11. ❌ An ECB/CBC detection oracle
+12. ❌ Byte-at-a-time ECB decryption (Simple)
+13. ❌ ECB cut-and-paste
+14. ❌ Byte-at-a-time ECB decryption (Harder)
+15. ❌ PKCS#7 padding validation
+16. ❌ CBC bitflipping attacks
