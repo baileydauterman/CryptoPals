@@ -25,9 +25,6 @@ namespace CryptoPals.UnitTests
             Assert.AreEqual(Challenge1Expected, hex2base62);
         }
 
-        private const string Challenge1Given = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
-        private const string Challenge1Expected = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t";
-
         /// <summary>
         /// <br></br>
         /// <br>Set 1 Challenge 2</br>
@@ -47,9 +44,6 @@ namespace CryptoPals.UnitTests
                             Basics.XORString(Challenge2Input));
         }
 
-        private readonly string[] Challenge2Input = new[] { "1c0111001f010100061a024b53535009181c", "686974207468652062756c6c277320657965" };
-        private const string Challenge2Expected = "746865206b696420646f6e277420706c6179";
-
         /// <summary>
         /// <br></br>
         /// <br>Set 1 Challenge 3</br>
@@ -68,8 +62,6 @@ namespace CryptoPals.UnitTests
             Assert.AreEqual(Challenge3Expected, PlaintextCore.ScoreByteArray(SingleByteKey.Decrypt(Challenge3Input).Values));
         }
 
-        private const string Challenge3Input = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
-        private const string Challenge3Expected = "Cooking MC's like a pound of bacon";
 
         /// <summary>
         /// <br>Set 1 Challenge 4</br>
@@ -81,11 +73,10 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge4()
         {
-            var input = File.ReadLines("../../../Data/Set 1/4.txt");
-            byte[][] bestScores = new byte[input.Count()][];
+            byte[][] bestScores = new byte[FileData[4].Count()][];
             int count = 0;
 
-            foreach (var line in input)
+            foreach (var line in FileData[4])
             {
                 var output = SingleByteKey.Decrypt(line);
                 bestScores[count++] = PlaintextCore.ScoreByteArray(output.Values);
@@ -114,12 +105,8 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge5()
         {
-            string input = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
-            string key = "ICE";
-            var output = RepeatingKey.Encrypt(key, input);
-            var expected = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272" +
-                "a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f";
-            Assert.AreEqual(expected, PlaintextCore.PrintByteArray(output));
+            var output = RepeatingKey.Encrypt(Challenge5Key, Challenge5Input);
+            Assert.AreEqual(Challenge5Expected, PlaintextCore.PrintByteArray(output));
         }
 
         /// <summary>
@@ -159,11 +146,12 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge6()
         {
-            Assert.AreEqual(37, Basics.BinaryEditDistance("this is a test", "wokka wokka!!!"));
-            var fileData = File.ReadAllText("../../../Data/Set 1/6.txt");
-            var dat = RepeatingKey.Decrypt(Convert.FromBase64String(fileData));
-            Assert.IsTrue(PlaintextCore.PrintByteArrayToString(dat).Contains("I'm back and I'm ringin' the bell"));
+            Assert.AreEqual(37, Basics.BinaryEditDistance(Challenge6TestCase[0], Challenge6TestCase[1]));
+
+            var dat = RepeatingKey.Decrypt(Convert.FromBase64String(string.Join(string.Empty, FileData[6])));
+            Assert.IsTrue(PlaintextCore.PrintByteArrayToString(dat).Contains(Challenge6Expected));
         }
+
 
         /// <summary>
         /// <br>Set 1 Challenge 7</br>
@@ -183,25 +171,23 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge7()
         {
-            var fileData = File.ReadAllText("../../../Data/Set 1/7.txt");
-            var key = "YELLOW SUBMARINE";
-            var dat = AES.DecryptECB(Convert.FromBase64String(fileData), Encoding.UTF8.GetBytes(key));
-            Assert.IsTrue(dat.Contains("I'm back and I'm ringin' the bell"));
+            var dat = AES.DecryptECB(Convert.FromBase64String(string.Join(string.Empty,FileData[7])), Encoding.UTF8.GetBytes(Challenge7Key));
+            Assert.IsTrue(dat.Contains(Challenge6Expected));
         }
 
+
         /// <summary>
-        /// Set 1 Challenge 8
-        /// Detect AES in ECB mode
-        /// In this file are a bunch of hex-encoded ciphertexts.
-        /// One of them has been encrypted with ECB.
-        /// Detect it.
-        /// Remember that the problem with ECB is that it is stateless and deterministic; the same 16 byte plaintext block will always produce the same 16 byte ciphertext.
+        /// <br>Set 1 Challenge 8</br>
+        /// <br>Detect AES in ECB mode</br>
+        /// <br>In this file are a bunch of hex-encoded ciphertexts.</br>
+        /// <br>One of them has been encrypted with ECB.</br>
+        /// <br>Detect it.</br>
+        /// <br>Remember that the problem with ECB is that it is stateless and deterministic; </br>
+        /// <br>the same 16 byte plaintext block will always produce the same 16 byte ciphertext.</br>
         /// </summary>
         [Test]
         public void Challenge8()
         {
-            //var fileData = File.ReadAllLines("../../../Data/Set 1/8.txt");
-            var fileData = File.ReadAllText("../../../Data/Set 1/8.txt");
             //var output = new byte[fileData.Length][];
             var i = 0;
             //foreach(var line in fileData)
@@ -213,5 +199,31 @@ namespace CryptoPals.UnitTests
             //var hmmm = AES.EncryptECB(PlaintextCore.PrintByteArrayToString(bestScore), Encoding.UTF8.GetBytes("YELLOW SUBMARINE"));
             //PlaintextCore.PrintByteArrayToString(hmmm);
         }
+
+        private const string Challenge1Given = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
+        private const string Challenge1Expected = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t";
+
+        private readonly string[] Challenge2Input = new[] { "1c0111001f010100061a024b53535009181c", "686974207468652062756c6c277320657965" };
+        private const string Challenge2Expected = "746865206b696420646f6e277420706c6179";
+
+        private const string Challenge3Input = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
+        private const string Challenge3Expected = "Cooking MC's like a pound of bacon";
+
+        private const string Challenge5Input = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
+        private const string Challenge5Key = "ICE";
+        private const string Challenge5Expected = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f";
+
+        private readonly string[] Challenge6TestCase = { "this is a test", "wokka wokka!!!" };
+        private const string Challenge6Expected = "I'm back and I'm ringin' the bell";
+
+        private const string Challenge7Key = "YELLOW SUBMARINE";
+
+        public readonly Dictionary<int, IEnumerable<string>> FileData = new()
+        {
+            { 4, File.ReadLines("../../../Data/Set 1/4.txt") },
+            { 6, File.ReadLines("../../../Data/Set 1/6.txt") },
+            { 7, File.ReadLines("../../../Data/Set 1/7.txt") },
+            { 8, File.ReadLines("../../../Data/Set 1/8.txt") },
+        };
     }
 }
