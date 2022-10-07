@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace CryptoPals
 {
@@ -22,23 +18,6 @@ namespace CryptoPals
         {
             return Encoding.Default.GetString(input);
         }
-
-        private static readonly Dictionary<char, int> frequencies = new Dictionary<char, int>
-        {
-            ['e'] = 26,
-            ['t'] = 25,
-            ['a'] = 24,
-            ['o'] = 23,
-            ['i'] = 22,
-            ['n'] = 21,
-            ['s'] = 20,
-            ['h'] = 19,
-            ['r'] = 18,
-            ['d'] = 17,
-            ['l'] = 16,
-            ['c'] = 15,
-            ['u'] = 14
-        };
 
         public static byte[] ScoreByteArray(IEnumerable<byte[]> input)
         {
@@ -64,11 +43,33 @@ namespace CryptoPals
         public static int ScoreEnglish(byte[] input)
         {
             var tempScore = 0;
-            return input.Select<byte, int>(i =>
+
+            foreach (var b in input)
             {
-                frequencies.TryGetValue((char)i, out tempScore);
-                return tempScore;
-            }).Sum() / input.Length;
+                if (_frequencies.TryGetValue((char)b, out var temp))
+                {
+                    tempScore += temp;
+                }
+
+            }
+            return tempScore / input.Length;
         }
+
+        private static readonly Dictionary<char, int> _frequencies = new()
+        {
+            ['e'] = 26,
+            ['t'] = 25,
+            ['a'] = 24,
+            ['o'] = 23,
+            ['i'] = 22,
+            ['n'] = 21,
+            ['s'] = 20,
+            ['h'] = 19,
+            ['r'] = 18,
+            ['d'] = 17,
+            ['l'] = 16,
+            ['c'] = 15,
+            ['u'] = 14
+        };
     }
 }

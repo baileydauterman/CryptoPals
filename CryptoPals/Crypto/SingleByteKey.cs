@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CryptoPals
+﻿namespace CryptoPals
 {
     internal class SingleByteKey
     {
@@ -23,7 +17,7 @@ namespace CryptoPals
 
         public static Dictionary<char, byte[]> Decrypt(string input)
         {
-            Dictionary<char, byte[]> output = new Dictionary<char, byte[]>();
+            var output = new Dictionary<char, byte[]>();
             var inputArray = Basics.HexToByteArray(input);
 
             for (char i = ' '; i <= '~'; i++)
@@ -36,7 +30,7 @@ namespace CryptoPals
 
         public static Dictionary<char, byte[]> Decrypt(byte[] input)
         {
-            Dictionary<char, byte[]> output = new Dictionary<char, byte[]>();
+            var output = new Dictionary<char, byte[]>();
 
             for (char i = ' '; i <= '~'; i++)
             {

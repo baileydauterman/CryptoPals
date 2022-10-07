@@ -1,68 +1,75 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using CryptoPals.Crypto;
 using NUnit.Framework;
 
 namespace CryptoPals.UnitTests
 {
-    internal class Set1
+    internal class Set1 : ISet
     {
-        // Set 1 Challenge 1
-        // Convert hex to base64
-        // The string:
-
-        // 49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d
-        // Should produce:
-
-        // SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t
-        // So go ahead and make that happen.You'll need to use this code for the rest of the exercises.
+        /// <summary>
+        /// <br></br>
+        /// <br>Set 1 Challenge 1</br>
+        /// <br>Convert hex to base64</br>
+        /// <br></br>
+        /// <br>Input:</br>
+        /// <br>49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d</br>
+        /// <br></br>
+        /// <br>Output:</br>
+        /// <br>SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t</br>
+        /// <br>So go ahead and make that happen.You'll need to use this code for the rest of the exercises.</br>
+        /// </summary>
         [Test]
         public void Challenge1()
         {
-            var given = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
-            var hex2base62 = Convert.ToBase64String(Basics.HexToByteArray(given));
-            Assert.AreEqual("SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t", hex2base62);
+            var hex2base62 = Convert.ToBase64String(Basics.HexToByteArray(Challenge1Given));
+            Assert.AreEqual(Challenge1Expected, hex2base62);
         }
 
-        // Set 1 Challenge 2
-        // Fixed XOR
-        // Write a function that takes two equal-length buffers and produces their XOR combination.
+        private const string Challenge1Given = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
+        private const string Challenge1Expected = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t";
 
-        // If your function works properly, then when you feed it the string:
-
-        // 1c0111001f010100061a024b53535009181c
-        // ...after hex decoding, and when XOR'd against:
-        // 686974207468652062756c6c277320657965
-        // ...should produce:
-        // 746865206b696420646f6e277420706c6179
+        /// <summary>
+        /// <br></br>
+        /// <br>Set 1 Challenge 2</br>
+        /// <br>Fixed XOR</br>
+        /// <br>Write a function that takes two equal-length buffers and produces their XOR combination.</br>
+        /// <br></br>
+        /// <br>Input:</br>
+        /// <br>1c0111001f010100061a024b53535009181c and 686974207468652062756c6c277320657965</br>
+        /// <br></br>
+        /// <br>Output:</br>
+        /// <br>746865206b696420646f6e277420706c6179</br>
+        /// </summary>
         [Test]
         public void Challenge2()
         {
-            var expected = "746865206b696420646f6e277420706c6179";
-            Assert.AreEqual(Convert.ToBase64String(Basics.HexToByteArray(expected)),
-                            Basics.XORString("1c0111001f010100061a024b53535009181c", "686974207468652062756c6c277320657965"));
+            Assert.AreEqual(Convert.ToBase64String(Basics.HexToByteArray(Challenge2Expected)),
+                            Basics.XORString(Challenge2Input));
         }
 
-        // Set 1 Challenge 3
-        // Single-byte XOR cipher
-        // The hex encoded string:
+        private readonly string[] Challenge2Input = new[] { "1c0111001f010100061a024b53535009181c", "686974207468652062756c6c277320657965" };
+        private const string Challenge2Expected = "746865206b696420646f6e277420706c6179";
 
-        // 1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736
-        // ...has been XOR'd against a single character. Find the key, decrypt the message.
-
-        // You can do this by hand.But don't: write code to do it for you.
-
-        // How? Devise some method for "scoring" a piece of English plaintext.Character frequency is a good metric.Evaluate each output and choose the one with the best score.
+        /// <summary>
+        /// <br></br>
+        /// <br>Set 1 Challenge 3</br>
+        /// <br>Single-byte XOR cipher</br>
+        /// <br>Input has been XOR'd against a single character. Find the key, decrypt the message</br>
+        /// <br></br>
+        /// <br>Input:</br>
+        /// <br>1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736</br>
+        /// <br></br>
+        /// <br>Output:</br>
+        /// <br>Cooking MC's like a pound of bacon</br>
+        /// </summary>
         [Test]
         public void Challenge3()
         {
-            var given = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
-            Assert.AreEqual("Cooking MC's like a pound of bacon",
-                            PlaintextCore.ScoreByteArray(SingleByteKey.Decrypt(given).Values));
+            Assert.AreEqual(Challenge3Expected, PlaintextCore.ScoreByteArray(SingleByteKey.Decrypt(Challenge3Input).Values));
         }
+
+        private const string Challenge3Input = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
+        private const string Challenge3Expected = "Cooking MC's like a pound of bacon";
 
         // Set 1 Challenge 4
         // Detect single-character XOR
@@ -72,7 +79,7 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge4()
         {
-            var input = File.ReadLines("../../../Data/Set1Challenge4.txt");
+            var input = File.ReadLines("../../../Data/Set 1/4.txt");
             byte[][] bestScores = new byte[input.Count()][];
             int count = 0;
 
@@ -147,7 +154,7 @@ namespace CryptoPals.UnitTests
         public void Challenge6()
         {
             Assert.AreEqual(37, Basics.BinaryEditDistance("this is a test", "wokka wokka!!!"));
-            var fileData = File.ReadAllText("../../../Data/Set1Challenge6.txt");
+            var fileData = File.ReadAllText("../../../Data/Set 1/6.txt");
             var dat = RepeatingKey.Decrypt(Convert.FromBase64String(fileData));
             Assert.IsTrue(PlaintextCore.PrintByteArrayToString(dat).Contains("I'm back and I'm ringin' the bell"));
         }
@@ -168,7 +175,7 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge7()
         {
-            var fileData = File.ReadAllText("../../../Data/Set1Challenge7.txt");
+            var fileData = File.ReadAllText("../../../Data/Set 1/7.txt");
             var key = "YELLOW SUBMARINE";
             var dat = AES.DecryptECB(Convert.FromBase64String(fileData), Encoding.UTF8.GetBytes(key));
             Assert.IsTrue(dat.Contains("I'm back and I'm ringin' the bell"));
@@ -186,17 +193,18 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge8()
         {
-            var fileData = File.ReadAllLines("../../../Data/Set1Challenge8.txt");
-            var output = new byte[fileData.Length][];
+            //var fileData = File.ReadAllLines("../../../Data/Set 1/8.txt");
+            var fileData = Data.DownloadWebData.ByteArray("https://cryptopals.com/static/challenge-data/8.txt");
+            //var output = new byte[fileData.Length][];
             var i = 0;
-            foreach(var line in fileData)
-            {
-                output[i] = Encoding.UTF8.GetBytes(AES.DecryptECB(Basics.HexToByteArray(line), Encoding.UTF8.GetBytes("YELLOW SUBMARINE")));
-                i++;
-            }
-            var bestScore = PlaintextCore.ScoreByteArray(output);
-            var hmmm = AES.EncryptECB(PlaintextCore.PrintByteArrayToString(bestScore), Encoding.UTF8.GetBytes("YELLOW SUBMARINE"));
-            PlaintextCore.PrintByteArrayToString(hmmm);
+            //foreach(var line in fileData)
+            //{
+            //    output[i] = Encoding.UTF8.GetBytes(AES.DecryptECB(Basics.HexToByteArray(line), Encoding.UTF8.GetBytes("YELLOW SUBMARINE")));
+            //    i++;
+            //}
+            //var bestScore = PlaintextCore.ScoreByteArray(output);
+            //var hmmm = AES.EncryptECB(PlaintextCore.PrintByteArrayToString(bestScore), Encoding.UTF8.GetBytes("YELLOW SUBMARINE"));
+            //PlaintextCore.PrintByteArrayToString(hmmm);
         }
     }
 }

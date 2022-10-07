@@ -70,6 +70,11 @@ namespace CryptoPals
             return Convert.ToBase64String(byteResult);
         }
 
+        public static string XORString(string[] values)
+        {
+            return XORString(values[0], values[1]);
+        }
+
         public static byte[] GetRow(byte[,] matrix, int rowNumber)
         {
             return Enumerable.Range(0, matrix.GetLength(1))
