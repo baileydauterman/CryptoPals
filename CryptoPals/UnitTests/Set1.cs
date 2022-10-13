@@ -73,13 +73,17 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge4()
         {
-            byte[][] bestScores = new byte[FileData[4].Count()][];
+            byte[][] bestScores = new byte[327][];
             int count = 0;
 
-            foreach (var line in FileData[4])
+            using (var stream = File.OpenRead(FileData[4]))
+            using (var sr = new StreamReader(stream))
             {
-                var output = SingleByteKey.Decrypt(line);
-                bestScores[count++] = PlaintextCore.ScoreByteArray(output.Values);
+                while (!sr.EndOfStream)
+                {
+                    var output = SingleByteKey.Decrypt(sr.ReadLine());
+                    bestScores[count++] = PlaintextCore.ScoreByteArray(output.Values);
+                }
             }
 
             Assert.AreEqual("Now that the party is jumping\n", PlaintextCore.ScoreByteArray(bestScores));
@@ -122,7 +126,7 @@ namespace CryptoPals.UnitTests
         /// <br></br>
         /// <br>Here's how:</br>
         /// <br></br>
-        /// <br>Let KEYSIZE be the guessed length of the key; try values from 2 to(say) 40.</br>
+        /// <br>Let KEYSIZE be the guessed length of the key; try values from 2 to (say) 40.</br>
         /// <br>Write a function to compute the edit distance/Hamming distance between two strings.The Hamming distance is just the number of differing bits.The distance between:</br>
         /// <br>this is a test</br>
         /// <br>and</br>
@@ -148,8 +152,12 @@ namespace CryptoPals.UnitTests
         {
             Assert.AreEqual(37, Basics.BinaryEditDistance(Challenge6TestCase[0], Challenge6TestCase[1]));
 
-            var dat = RepeatingKey.Decrypt(Convert.FromBase64String(string.Join(string.Empty, FileData[6])));
-            Assert.IsTrue(PlaintextCore.PrintByteArrayToString(dat).Contains(Challenge6Expected));
+            using (var stream = File.OpenRead(FileData[6]))
+            using (var sr = new StreamReader(stream))
+            {
+                var dat = RepeatingKey.Decrypt(Convert.FromBase64String(sr.ReadToEnd()));
+                Assert.IsTrue(PlaintextCore.PrintByteArrayToString(dat).Contains(Challenge6Expected));
+            }
         }
 
 
@@ -171,8 +179,17 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge7()
         {
-            var dat = AES.DecryptECB(Convert.FromBase64String(string.Join(string.Empty,FileData[7])), Encoding.UTF8.GetBytes(Challenge7Key));
-            Assert.IsTrue(dat.Contains(Challenge6Expected));
+            using (var stream = File.OpenRead(FileData[7]))
+            using (var sr = new StreamReader(stream))
+            {
+                var key = Encoding.UTF8.GetBytes(Challenge7Key);
+                var data = Convert.FromBase64String(sr.ReadToEnd());
+
+                var dat = AES.DecryptEcb(data, key);
+                var mine = Encoding.ASCII.GetString(dat);
+
+                Assert.IsTrue(mine.StartsWith(Challenge6Expected));
+            }
         }
 
 
@@ -188,16 +205,29 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge8()
         {
-            //var output = new byte[fileData.Length][];
-            var i = 0;
-            //foreach(var line in fileData)
-            //{
-            //    output[i] = Encoding.UTF8.GetBytes(AES.DecryptECB(Basics.HexToByteArray(line), Encoding.UTF8.GetBytes("YELLOW SUBMARINE")));
-            //    i++;
-            //}
-            //var bestScore = PlaintextCore.ScoreByteArray(output);
-            //var hmmm = AES.EncryptECB(PlaintextCore.PrintByteArrayToString(bestScore), Encoding.UTF8.GetBytes("YELLOW SUBMARINE"));
-            //PlaintextCore.PrintByteArrayToString(hmmm);
+            var best = string.Empty;
+            var higestScore = 0;
+
+            using (var stream = File.OpenRead(FileData[8].ToString()))
+            using (var sr = new StreamReader(stream))
+            {
+                while (!sr.EndOfStream)
+                {
+                    var line = Basics.HexToByteArray(sr.ReadLine());
+
+                    if (ECB.IsEcb(line, out var score))
+                    {
+                        if (score > higestScore)
+                        {
+                            higestScore = score;
+                            best = line.ToString();
+                        }
+                    }
+
+                }
+
+                Assert.AreEqual(best, Challenge8Expeccted);
+            }
         }
 
         private const string Challenge1Given = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
@@ -218,12 +248,14 @@ namespace CryptoPals.UnitTests
 
         private const string Challenge7Key = "YELLOW SUBMARINE";
 
-        public readonly Dictionary<int, IEnumerable<string>> FileData = new()
+        private const string Challenge8Expeccted = "d880619740a8a19b7840a8a31c810a3d08649af70dc06f4fd5d2d69c744cd283e2dd052f6b641dbf9d11b0348542bb5708649af70dc06f4fd5d2d69c744cd2839475c9dfdbc1d46597949d9c7e82bf5a08649af70dc06f4fd5d2d69c744cd28397a93eab8d6aecd566489154789a6b0308649af70dc06f4fd5d2d69c744cd283d403180c98c8f6db1f2a3f9c4040deb0ab51b29933f2c123c58386b06fba186a";
+
+        public readonly Dictionary<int, string> FileData = new()
         {
-            { 4, File.ReadLines("../../../Data/Set 1/4.txt") },
-            { 6, File.ReadLines("../../../Data/Set 1/6.txt") },
-            { 7, File.ReadLines("../../../Data/Set 1/7.txt") },
-            { 8, File.ReadLines("../../../Data/Set 1/8.txt") },
+            { 4, "../../../Data/Set 1/4.txt" },
+            { 6, "../../../Data/Set 1/6.txt"},
+            { 7, "../../../Data/Set 1/7.txt"},
+            { 8, "../../../Data/Set 1/8.txt"},
         };
     }
 }

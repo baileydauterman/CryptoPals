@@ -45,7 +45,10 @@ namespace CryptoPals
 
         private static int EditDistance(byte[] one, byte[] two)
         {
-            if (one.Length != two.Length) { throw new ArgumentException("arrays are not the same length"); }
+            if (one.Length != two.Length) 
+            {
+                throw new ArgumentException("arrays are not the same length"); 
+            }
 
             int score = 0;
 
@@ -53,11 +56,13 @@ namespace CryptoPals
             {
                 var distance = 0;
                 var counter = one[i] ^ two[i];
+
                 while (counter > 0)
                 {
                     distance++;
                     counter &= counter - 1;
                 }
+
                 score += distance;
             }
             return score;
@@ -79,12 +84,18 @@ namespace CryptoPals
                     editDistance += EditDistance(left, right);
                     calcCount++;
                 }
-                var normalizedEditDistance = (decimal)editDistance / (decimal)calcCount / (decimal)keySize;
+
+                decimal normalizedEditDistance = editDistance / calcCount / keySize;
                 
                 if (normalizedEditDistance < lowestNormalDistance)
                 {
                     lowestNormalDistance = normalizedEditDistance;
-                    if(lowestKeySizes.Count > 2) { lowestKeySizes.Dequeue(); }
+
+                    if(lowestKeySizes.Count > 2) 
+                    {
+                        lowestKeySizes.Dequeue();
+                    }
+
                     lowestKeySizes.Enqueue(keySize);
                 }
             }
@@ -116,12 +127,13 @@ namespace CryptoPals
 
         private static byte[,] TransposeChunkData(byte[][] chunkData)
         {
-            var data = new byte[chunkData[0].Length,chunkData.Length];
-            for(int i=0;i<chunkData[i].Length;i++)
+            var data = new byte[chunkData[0].Length, chunkData.Length];
+
+            for (int i = 0; i < chunkData[i].Length; i++)
             {
-                for(int j=0;j<chunkData.Length;j++)
+                for (int j = 0; j < chunkData.Length; j++)
                 {
-                    data[i,j] = chunkData[j][i];
+                    data[i, j] = chunkData[j][i];
                 }
             }
 
