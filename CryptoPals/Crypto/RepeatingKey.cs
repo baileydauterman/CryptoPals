@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CryptoPals;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace CryptoPals
 {
-    internal class RepeatingKey
+    public class RepeatingKey
     {
         public static byte[] Encrypt(string key, string input)
         {
@@ -31,11 +26,11 @@ namespace CryptoPals
             var encryptionKey = SingleByteXor(transposedBlocks);
             var counter = 0;
 
-            for (int i=0; i<encryptedData.Length; i++)
+            for (int i = 0; i < encryptedData.Length; i++)
             {
                 encryptedData[i] = (byte)(encryptedData[i] ^ encryptionKey[i % encryptionKey.Length]);
                 counter++;
-                if (counter > encryptionKey.Length-1)
+                if (counter > encryptionKey.Length - 1)
                 {
                     counter = 0;
                 }
@@ -45,9 +40,9 @@ namespace CryptoPals
 
         private static int EditDistance(byte[] one, byte[] two)
         {
-            if (one.Length != two.Length) 
+            if (one.Length != two.Length)
             {
-                throw new ArgumentException("arrays are not the same length"); 
+                throw new ArgumentException("arrays are not the same length");
             }
 
             int score = 0;
@@ -86,12 +81,12 @@ namespace CryptoPals
                 }
 
                 decimal normalizedEditDistance = editDistance / calcCount / keySize;
-                
+
                 if (normalizedEditDistance < lowestNormalDistance)
                 {
                     lowestNormalDistance = normalizedEditDistance;
 
-                    if(lowestKeySizes.Count > 2) 
+                    if (lowestKeySizes.Count > 2)
                     {
                         lowestKeySizes.Dequeue();
                     }
@@ -113,11 +108,11 @@ namespace CryptoPals
         private static byte[][] ChunkData(byte[] encryptedData, int keySize)
         {
             byte[][] data = new byte[encryptedData.Length / keySize][];
-            for(int i=0; i<encryptedData.Length; i+=keySize)
+            for (int i = 0; i < encryptedData.Length; i += keySize)
             {
-                if(i + keySize < encryptedData.Length)
+                if (i + keySize < encryptedData.Length)
                 {
-                    data[i/keySize] = new ArraySegment<byte>(encryptedData, i, keySize).ToArray();
+                    data[i / keySize] = new ArraySegment<byte>(encryptedData, i, keySize).ToArray();
                 }
             }
 
@@ -144,10 +139,10 @@ namespace CryptoPals
         {
             string key = "";
 
-            for(int i=0; i <= transposedBytes.GetLength(0) - 1; i++)
+            for (int i = 0; i <= transposedBytes.GetLength(0) - 1; i++)
             {
                 var bestScore = SingleByteKey.Decrypt(Basics.GetRow(transposedBytes, i));
-                key +=  PlaintextCore.ScoreByteArray(bestScore);
+                key += PlaintextCore.ScoreByteArray(bestScore);
             }
 
             return Encoding.UTF8.GetBytes(key);

@@ -1,6 +1,6 @@
 ﻿namespace CryptoPals.Crypto
 {
-    internal static class Extensions
+    public static class Extensions
     {
         public static IEnumerable<byte[]> SliceByteArray(this byte[] source, int count = 16, bool padToEnd = true)
         {

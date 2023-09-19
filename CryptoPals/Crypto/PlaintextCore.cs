@@ -2,15 +2,17 @@
 
 namespace CryptoPals
 {
-    internal class PlaintextCore
+    public class PlaintextCore
     {
         public static string PrintByteArray(byte[] input)
         {
             var sb = new StringBuilder(input.Length * 2);
+
             for (var i = 0; i < input.Length; i++)
             {
                 sb.AppendFormat("{0:x2}", input[i]);
             }
+
             return sb.ToString();
         }
 
@@ -31,7 +33,7 @@ namespace CryptoPals
             foreach (var pair in input)
             {
                 var score = ScoreEnglish(pair.Value);
-                if(score > highestScore)
+                if (score > highestScore)
                 {
                     highestScore = score;
                     output = pair;
@@ -46,30 +48,42 @@ namespace CryptoPals
 
             foreach (var b in input)
             {
-                if (_frequencies.TryGetValue((char)b, out var temp))
+                if (_frequencies.TryGetValue(b, out var temp))
                 {
                     tempScore += temp;
                 }
-
             }
             return tempScore / input.Length;
         }
 
-        private static readonly Dictionary<char, int> _frequencies = new()
+        private static readonly Dictionary<byte, int> _frequencies = new()
         {
-            ['e'] = 26,
-            ['t'] = 25,
-            ['a'] = 24,
-            ['o'] = 23,
-            ['i'] = 22,
-            ['n'] = 21,
-            ['s'] = 20,
-            ['h'] = 19,
-            ['r'] = 18,
-            ['d'] = 17,
-            ['l'] = 16,
-            ['c'] = 15,
-            ['u'] = 14
+            // e
+            {101, 26},
+            // t
+            {116, 25},
+            // a
+            {97, 24},
+            // o
+            {111, 23},
+            // i
+            {105, 22},
+            // n
+            {110, 21},
+            // s
+            {115, 20},
+            // h
+            {104, 19},
+            // r
+            {114, 18},
+            // d
+            {100, 17},
+            // l
+            {108, 16},
+            // c
+            {99, 15},
+            // u
+            {117, 14 }
         };
     }
 }

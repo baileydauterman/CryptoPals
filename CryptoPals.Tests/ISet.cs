@@ -1,4 +1,4 @@
-﻿namespace CryptoPals.UnitTests
+﻿namespace CryptoPals.Tests
 {
     internal interface ISet
     {

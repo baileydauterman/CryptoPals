@@ -1,6 +1,6 @@
 ﻿namespace CryptoPals
 {
-    internal class SingleByteKey
+    public class SingleByteKey
     {
         private static byte[] Encrypt(char key, byte[] input)
         {
@@ -9,7 +9,7 @@
 
             foreach (var index in input)
             {
-                output[++i] = (byte)((input[i] ^ key));
+                output[++i] = (byte)(input[i] ^ key);
             }
 
             return output;

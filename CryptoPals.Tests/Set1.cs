@@ -1,8 +1,12 @@
-﻿using System.Text;
-using CryptoPals.Crypto;
+﻿using CryptoPals.Crypto;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
-namespace CryptoPals.UnitTests
+namespace CryptoPals.Tests
 {
     internal class Set1 : ISet
     {
@@ -21,8 +25,17 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge1()
         {
-            var hex2base62 = Convert.ToBase64String(Basics.HexToByteArray(Challenge1Given));
-            Assert.AreEqual(Challenge1Expected, hex2base62);
+            byte[] expected = new byte[]
+            {
+                73,39,109,32,107,105,108,108,105,110,103,32,121,
+                111,117,114,32,98,114,97,105,110,32,108,105,107,
+                101,32,97,32,112,111,105,115,111,110,111,117,115,
+                32,109,117,115,104,114,111,111,109
+            };
+
+            var givenText = GetFileData(1);
+            var hexBytes = Basics.HexToByteArray(givenText);
+            Assert.True(expected.SequenceEqual(hexBytes));
         }
 
         /// <summary>
@@ -40,8 +53,9 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge2()
         {
-            Assert.AreEqual(Convert.ToBase64String(Basics.HexToByteArray(Challenge2Expected)),
-                            Basics.XORString(Challenge2Input));
+            var expected = Basics.HexToByteArray("746865206b696420646f6e277420706c6179");
+            var input = new XOR("1c0111001f010100061a024b53535009181c", "686974207468652062756c6c277320657965");
+            Assert.True(expected.SequenceEqual(input.Output));
         }
 
         /// <summary>
@@ -59,7 +73,10 @@ namespace CryptoPals.UnitTests
         [Test]
         public void Challenge3()
         {
-            Assert.AreEqual(Challenge3Expected, PlaintextCore.ScoreByteArray(SingleByteKey.Decrypt(Challenge3Input).Values));
+            string input = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
+            string expected = "Cooking MC's like a pound of bacon";
+
+            Assert.AreEqual(expected, PlaintextCore.ScoreByteArray(SingleByteKey.Decrypt(input).Values));
         }
 
 
@@ -81,7 +98,8 @@ namespace CryptoPals.UnitTests
             {
                 while (!sr.EndOfStream)
                 {
-                    var output = SingleByteKey.Decrypt(sr.ReadLine());
+                    var line = sr.ReadLine() ?? throw new ArgumentNullException();
+                    var output = SingleByteKey.Decrypt(line);
                     bestScores[count++] = PlaintextCore.ScoreByteArray(output.Values);
                 }
             }
@@ -230,14 +248,10 @@ namespace CryptoPals.UnitTests
             }
         }
 
-        private const string Challenge1Given = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
-        private const string Challenge1Expected = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t";
-
-        private readonly string[] Challenge2Input = new[] { "1c0111001f010100061a024b53535009181c", "686974207468652062756c6c277320657965" };
-        private const string Challenge2Expected = "746865206b696420646f6e277420706c6179";
-
-        private const string Challenge3Input = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
-        private const string Challenge3Expected = "Cooking MC's like a pound of bacon";
+        private string GetFileData(int i)
+        {
+            return File.ReadAllText(FileData[i]);
+        }
 
         private const string Challenge5Input = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
         private const string Challenge5Key = "ICE";
@@ -252,6 +266,7 @@ namespace CryptoPals.UnitTests
 
         public readonly Dictionary<int, string> FileData = new()
         {
+            { 1, "../../../Data/Set 1/1.txt" },
             { 4, "../../../Data/Set 1/4.txt" },
             { 6, "../../../Data/Set 1/6.txt"},
             { 7, "../../../Data/Set 1/7.txt"},

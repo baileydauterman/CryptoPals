@@ -1,39 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Globalization;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace CryptoPals
 {
-    internal class Basics
+    public class Basics
     {
         public static byte[] ConvertToByteArray(string str, Encoding encoding)
         {
             return encoding.GetBytes(str);
         }
 
-        public static string ToBinary(Byte[] data)
+        public static string ToBinary(byte[] data)
         {
             return string.Join(" ", data.Select(byt => Convert.ToString(byt, 2).PadLeft(8, '0')));
         }
 
         public static int BinaryEditDistance(string one, string two)
         {
-            if(one.Length != two.Length) { throw new ArgumentException("strings are not the same length"); }
+            if (one.Length != two.Length) { throw new ArgumentException("strings are not the same length"); }
 
             string oneBin = ToBinary(ConvertToByteArray(one, Encoding.UTF8));
             string twoBin = ToBinary(ConvertToByteArray(two, Encoding.UTF8));
             int counter = 0;
 
-            for (int i = 0; i < oneBin.Length; i++) { 
+            for (int i = 0; i < oneBin.Length; i++)
+            {
                 counter += oneBin[i] ^ twoBin[i];
             }
 
             return counter;
         }
-
 
         public static byte[] HexToByteArray(string hex)
         {
@@ -42,8 +37,11 @@ namespace CryptoPals
             using (var sr = new StringReader(hex))
             {
                 for (var i = 0; i < outputLength; i++)
+                {
                     output[i] = Convert.ToByte(new string(new char[2] { (char)sr.Read(), (char)sr.Read() }), 16);
+                }
             }
+
             return output;
         }
 
@@ -67,12 +65,8 @@ namespace CryptoPals
             {
                 byteResult[i] = (byte)(byteInput[i] ^ byteKey[i]);
             }
-            return Convert.ToBase64String(byteResult);
-        }
 
-        public static string XORString(string[] values)
-        {
-            return XORString(values[0], values[1]);
+            return Convert.ToBase64String(byteResult);
         }
 
         public static byte[] GetRow(byte[,] matrix, int rowNumber)

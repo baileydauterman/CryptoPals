@@ -2,7 +2,7 @@
 
 namespace CryptoPals.Crypto
 {
-    internal class AES
+    public class AES
     {
         public static byte[] EncryptECB(string data, byte[] key)
         {

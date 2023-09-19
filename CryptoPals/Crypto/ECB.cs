@@ -8,7 +8,7 @@ namespace CryptoPals.Crypto
         {
             if (data.Length < 16)
             {
-                throw new InvalidDataException($"{nameof(data)} is too short");
+                throw new InvalidDataException("Data should be larger than 16-bytes per ECB spec");
             }
 
             byte[] key = Encoding.UTF8.GetBytes("YELLOW SUBMARINE");

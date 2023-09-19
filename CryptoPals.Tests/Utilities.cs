@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CryptoPals;
 using NUnit.Framework;
+using System.Text;
 
-namespace CryptoPals.UnitTests
+namespace CryptoPals.Tests
 {
-    internal class BasicTest
+    public class Tests
     {
         [Test]
         public static void StringToBinaryConversion()
