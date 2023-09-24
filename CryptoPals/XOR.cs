@@ -2,10 +2,19 @@
 {
     public class XOR
     {
-        public XOR(string original, string key)
+        public XOR(string original, string key, bool isHexData = false)
         {
-            Original = original.ToByteArray();
-            Key = key.ToByteArray();
+            if (isHexData)
+            {
+                Original = original.FromHex();
+                Key = key.FromHex();
+            }
+            else
+            {
+                Original = original.ToByteArray();
+                Key = key.ToByteArray();
+            }
+
             Output = ComputeXOR(Original, Key);
         }
 

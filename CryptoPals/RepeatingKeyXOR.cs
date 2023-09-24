@@ -2,22 +2,41 @@
 
 namespace CryptoPals
 {
-    public class RepeatingKey
+    public class RepeatingKeyXOR
     {
-        public static byte[] Encrypt(string key, string input)
+        public RepeatingKeyXOR(string input, string key)
+        {
+            Input = Encoding.UTF8.GetBytes(input);
+            Key = Encoding.UTF8.GetBytes(key);
+            Output = Encrypt(Input, Key);
+        }
+
+        public byte[] Input { get; }
+
+        public byte[] Key { get; }
+
+        public byte[] Output { get; }
+
+        public static byte[] Encrypt(string input, string key)
+        {
+            return Encrypt(input.ToByteArray(), key.ToByteArray());
+        }
+
+        public static byte[] Encrypt(byte[] input, byte[] key)
         {
             var output = new byte[input.Length];
-            var inputBytes = Encoding.UTF8.GetBytes(input);
-            var keyBytes = Encoding.UTF8.GetBytes(key);
 
-            for (int i = 0; i < inputBytes.Length; i++)
+            for (int i = 0; i < input.Length; i++)
             {
-                output[i] = (byte)(inputBytes[i] ^ keyBytes[i % key.Length]);
+                output[i] = (byte)(input[i] ^ key[i % key.Length]);
             }
 
             return output;
         }
+    }
 
+    public class RepeatingKeyXORDecryptor
+    {
         public static byte[] Decrypt(byte[] encryptedData)
         {
             var possibleKeys = NormalizedKeySize(encryptedData);

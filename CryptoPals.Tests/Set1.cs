@@ -25,6 +25,7 @@ namespace CryptoPals.Tests
         [Test]
         public void Challenge1()
         {
+            // SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t
             byte[] expected = new byte[]
             {
                 73,39,109,32,107,105,108,108,105,110,103,32,121,
@@ -34,7 +35,7 @@ namespace CryptoPals.Tests
             };
 
             var givenText = GetFileData(1);
-            var hexBytes = Basics.HexToByteArray(givenText);
+            var hexBytes = givenText.FromHex();
             Assert.True(expected.SequenceEqual(hexBytes));
         }
 
@@ -53,8 +54,8 @@ namespace CryptoPals.Tests
         [Test]
         public void Challenge2()
         {
-            var expected = Basics.HexToByteArray("746865206b696420646f6e277420706c6179");
-            var input = new XOR("1c0111001f010100061a024b53535009181c", "686974207468652062756c6c277320657965");
+            var expected = "746865206b696420646f6e277420706c6179".FromHex();
+            var input = new XOR("1c0111001f010100061a024b53535009181c", "686974207468652062756c6c277320657965", true);
             Assert.True(expected.SequenceEqual(input.Output));
         }
 
@@ -73,10 +74,11 @@ namespace CryptoPals.Tests
         [Test]
         public void Challenge3()
         {
-            string input = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
-            string expected = "Cooking MC's like a pound of bacon";
+            var input = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
+            var expected = "Cooking MC's like a pound of bacon";
+            var output = SingleByteKey.Decrypt(input);
 
-            Assert.AreEqual(expected, PlaintextCore.ScoreByteArray(SingleByteKey.Decrypt(input).Values));
+            Assert.AreEqual(expected, PlaintextCore.ScoreByteArray(output));
         }
 
 
@@ -90,21 +92,22 @@ namespace CryptoPals.Tests
         [Test]
         public void Challenge4()
         {
+            var expected = "Now that the party is jumping\n";
             byte[][] bestScores = new byte[327][];
             int count = 0;
 
-            using (var stream = File.OpenRead(FileData[4]))
+            using (var stream = GetFileStream(4))
             using (var sr = new StreamReader(stream))
             {
                 while (!sr.EndOfStream)
                 {
                     var line = sr.ReadLine() ?? throw new ArgumentNullException();
                     var output = SingleByteKey.Decrypt(line);
-                    bestScores[count++] = PlaintextCore.ScoreByteArray(output.Values);
+                    bestScores[count++] = PlaintextCore.ScoreByteArray(output);
                 }
             }
 
-            Assert.AreEqual("Now that the party is jumping\n", PlaintextCore.ScoreByteArray(bestScores));
+            Assert.AreEqual(expected, PlaintextCore.ScoreByteArray(bestScores));
         }
 
         /// <summary>
@@ -127,8 +130,13 @@ namespace CryptoPals.Tests
         [Test]
         public void Challenge5()
         {
-            var output = RepeatingKey.Encrypt(Challenge5Key, Challenge5Input);
-            Assert.AreEqual(Challenge5Expected, PlaintextCore.PrintByteArray(output));
+            var input = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
+            var key = "ICE";
+            var expected = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f";
+
+            var repeatingXOR = new RepeatingKeyXOR(input, key);
+
+            Assert.AreEqual(expected, PlaintextCore.PrintByteArray(repeatingXOR.Output));
         }
 
         /// <summary>
@@ -168,16 +176,15 @@ namespace CryptoPals.Tests
         [Test]
         public void Challenge6()
         {
-            Assert.AreEqual(37, Basics.BinaryEditDistance(Challenge6TestCase[0], Challenge6TestCase[1]));
+            var expected = "I'm back and I'm ringin' the bell";
 
-            using (var stream = File.OpenRead(FileData[6]))
+            using (var stream = GetFileStream(6))
             using (var sr = new StreamReader(stream))
             {
-                var dat = RepeatingKey.Decrypt(Convert.FromBase64String(sr.ReadToEnd()));
-                Assert.IsTrue(PlaintextCore.PrintByteArrayToString(dat).Contains(Challenge6Expected));
+                var dat = RepeatingKeyXORDecryptor.Decrypt(Convert.FromBase64String(sr.ReadToEnd()));
+                Assert.IsTrue(PlaintextCore.PrintByteArrayToString(dat).Contains(expected));
             }
         }
-
 
         /// <summary>
         /// <br>Set 1 Challenge 7</br>
@@ -197,16 +204,18 @@ namespace CryptoPals.Tests
         [Test]
         public void Challenge7()
         {
+            var key = "YELLOW SUBMARINE".ToByteArray();
+            var expected = "I'm back and I'm ringin' the bell";
+
             using (var stream = File.OpenRead(FileData[7]))
             using (var sr = new StreamReader(stream))
             {
-                var key = Encoding.UTF8.GetBytes(Challenge7Key);
                 var data = Convert.FromBase64String(sr.ReadToEnd());
 
-                var dat = AES.DecryptEcb(data, key);
+                var dat = AES.ECB.DecryptEcb(data, key);
                 var mine = Encoding.ASCII.GetString(dat);
 
-                Assert.IsTrue(mine.StartsWith(Challenge6Expected));
+                Assert.IsTrue(mine.StartsWith(expected));
             }
         }
 
@@ -231,7 +240,7 @@ namespace CryptoPals.Tests
             {
                 while (!sr.EndOfStream)
                 {
-                    var line = Basics.HexToByteArray(sr.ReadLine());
+                    var line = sr.ReadLine().FromHex();
 
                     if (ECB.IsEcb(line, out var score))
                     {
@@ -241,7 +250,6 @@ namespace CryptoPals.Tests
                             best = line.ToString();
                         }
                     }
-
                 }
 
                 Assert.AreEqual(best, Challenge8Expeccted);
@@ -253,14 +261,10 @@ namespace CryptoPals.Tests
             return File.ReadAllText(FileData[i]);
         }
 
-        private const string Challenge5Input = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
-        private const string Challenge5Key = "ICE";
-        private const string Challenge5Expected = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f";
-
-        private readonly string[] Challenge6TestCase = { "this is a test", "wokka wokka!!!" };
-        private const string Challenge6Expected = "I'm back and I'm ringin' the bell";
-
-        private const string Challenge7Key = "YELLOW SUBMARINE";
+        private Stream GetFileStream(int i)
+        {
+            return File.OpenRead(FileData[i]);
+        }
 
         private const string Challenge8Expeccted = "d880619740a8a19b7840a8a31c810a3d08649af70dc06f4fd5d2d69c744cd283e2dd052f6b641dbf9d11b0348542bb5708649af70dc06f4fd5d2d69c744cd2839475c9dfdbc1d46597949d9c7e82bf5a08649af70dc06f4fd5d2d69c744cd28397a93eab8d6aecd566489154789a6b0308649af70dc06f4fd5d2d69c744cd283d403180c98c8f6db1f2a3f9c4040deb0ab51b29933f2c123c58386b06fba186a";
 

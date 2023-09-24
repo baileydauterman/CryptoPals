@@ -56,6 +56,9 @@ namespace CryptoPals
             return tempScore / input.Length;
         }
 
+        /// <summary>
+        /// ETAOIN SHRDLU
+        /// </summary>
         private static readonly Dictionary<byte, int> _frequencies = new()
         {
             // e

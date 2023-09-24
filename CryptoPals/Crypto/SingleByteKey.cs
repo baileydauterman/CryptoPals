@@ -15,17 +15,15 @@
             return output;
         }
 
-        public static Dictionary<char, byte[]> Decrypt(string input)
+        public static IEnumerable<byte[]> Decrypt(string input)
         {
             var output = new Dictionary<char, byte[]>();
-            var inputArray = Basics.HexToByteArray(input);
+            var inputArray = input.FromHex();
 
             for (char i = ' '; i <= '~'; i++)
             {
-                output.Add(i, Encrypt(i, inputArray));
+                yield return Encrypt(i, inputArray);
             }
-
-            return output;
         }
 
         public static Dictionary<char, byte[]> Decrypt(byte[] input)
